@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
@@ -69,6 +70,7 @@ func contactCreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	db.Create(&contact)
+	triggerNotification()
 }
 
 func applyCorsHeader(w http.ResponseWriter, r *http.Request) {
@@ -76,4 +78,21 @@ func applyCorsHeader(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", origin)
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Origin, X-Auth-Token")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS")
+}
+
+type smtpTemplateData struct {
+	From    string
+	To      string
+	Subject string
+	Body    string
+}
+
+func triggerNotification() {
+	key := os.Getenv("CONTACT_US_IFTTT_KEY")
+	trigger := os.Getenv("CONTACT_US_IFTTT_TRIGGER")
+	url := "https://maker.ifttt.com/trigger/" + trigger + "/with/key/" + key
+	_, err := http.Post(url, "application/json", nil)
+	if err != nil {
+		log.Printf("Error posting notification: %s", err)
+	}
 }

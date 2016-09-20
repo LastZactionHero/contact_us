@@ -6,6 +6,8 @@
 - CONTACT_US_DB_PASS - Mysql DB Password
 - CONTACT_US_DB_NAME - Mysql DB Name
 - CONTACT_US_PORT - Server Port
+- CONTACT_US_IFTTT_KEY - IFTTT Maker Key
+- CONTACT_US_IFTTT_TRIGGER - IFTTT Trigger Name
 
 ## Create Contact
 POST: /contact
