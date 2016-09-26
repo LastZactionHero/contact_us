@@ -34,6 +34,11 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/contact", optionsHandler).Methods("OPTIONS")
 	r.HandleFunc("/contact", contactCreateHandler).Methods("POST")
+
+	r.HandleFunc("/skills", optionsHandler).Methods("OPTIONS")
+	r.HandleFunc("/skills", skillCreateHandler).Methods("POST")
+	r.HandleFunc("/skills", skillIndexHandler).Methods("GET")
+
 	http.Handle("/", r)
 	http.ListenAndServe(fmt.Sprintf(":%s", serverPort), nil)
 }
@@ -54,6 +59,7 @@ func dbConnect() *gorm.DB {
 
 func dbInit() {
 	db.AutoMigrate(&Contact{})
+	db.AutoMigrate(&Skill{})
 }
 
 func optionsHandler(w http.ResponseWriter, r *http.Request) {
