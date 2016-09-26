@@ -21,7 +21,14 @@ func skillCreateHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	db.Create(&skill)
+
+	var existingSkill Skill
+	db.Where("name = ?", skill.Name).First(&existingSkill)
+	if existingSkill.ID > 0 {
+		// Already exists
+	} else {
+		db.Create(&skill)
+	}
 }
 
 func skillIndexHandler(w http.ResponseWriter, r *http.Request) {
