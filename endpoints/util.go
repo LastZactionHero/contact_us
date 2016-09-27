@@ -51,7 +51,7 @@ func validate(m interface{}) *[]byte {
 			fieldName := mt.Field(i).Name
 			errorString := errors[fieldName]
 			if errorString != nil {
-				errorContent[jsonName] = errorString
+				errorContent[jsonName] = replaceErrorMessages(errorString)
 			}
 		}
 		errorBody, _ := json.Marshal(errorContent)
@@ -59,4 +59,24 @@ func validate(m interface{}) *[]byte {
 		return &errorBody
 	}
 	return nil
+}
+
+func replaceErrorMessages(errorArray validator.ErrorArray) []string {
+	var messages []string
+	for _, defaultMessage := range errorArray {
+		newMessage := replaceErrorMessage(defaultMessage.Error())
+		messages = append(messages, newMessage)
+	}
+	return messages
+}
+
+func replaceErrorMessage(message string) string {
+	switch {
+	case message == "less than min":
+		return "is required"
+	case message == "greater than max":
+		return "is too long"
+	default:
+		return message
+	}
 }
