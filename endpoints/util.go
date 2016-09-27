@@ -41,7 +41,6 @@ func triggerNotification() {
 
 func validate(m interface{}) *[]byte {
 	mt := reflect.TypeOf(m)
-	log.Print(m)
 	if err := validator.Validate(m); err != nil {
 		errors, _ := err.(validator.ErrorMap)
 

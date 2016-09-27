@@ -3,7 +3,6 @@ package endpoints
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/LastZactionHero/contact_us/database"
@@ -30,10 +29,8 @@ type payloadContractor struct {
 
 // ContractorCreateHandler POST create Contractor
 func ContractorCreateHandler(w http.ResponseWriter, r *http.Request) {
-	log.Print("ContractorCreateHandler")
 	applyCorsHeader(w, r)
 	body, _ := ioutil.ReadAll(r.Body)
-	log.Print(body)
 	var payload payloadContractor
 
 	err := json.Unmarshal(body, &payload)
@@ -41,7 +38,6 @@ func ContractorCreateHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	log.Print(payload)
 
 	var skills []models.Skill
 	database.DB.Where("id in (?)", payload.SkillIDs).Find(&skills)
@@ -63,7 +59,6 @@ func ContractorCreateHandler(w http.ResponseWriter, r *http.Request) {
 		Skills:            skills,
 	}
 
-	log.Print(contractor)
 	if errorBody := validate(contractor); errorBody != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(*errorBody)
