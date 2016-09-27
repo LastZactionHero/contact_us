@@ -20,6 +20,12 @@ func SkillCreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if errorBody := validate(skill); errorBody != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(*errorBody)
+		return
+	}
+
 	var existingSkill models.Skill
 	database.DB.Where("name = ?", skill.Name).First(&existingSkill)
 	if existingSkill.ID > 0 {

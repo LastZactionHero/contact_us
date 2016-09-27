@@ -1,9 +1,13 @@
 package endpoints
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
+	"reflect"
+
+	validator "gopkg.in/validator.v2"
 )
 
 // OptionsHandler respond to Options method
@@ -33,4 +37,27 @@ func triggerNotification() {
 	if err != nil {
 		log.Printf("Error posting notification: %s", err)
 	}
+}
+
+func validate(m interface{}) *[]byte {
+	mt := reflect.TypeOf(m)
+	log.Print(m)
+	if err := validator.Validate(m); err != nil {
+		errors, _ := err.(validator.ErrorMap)
+
+		errorContent := map[string]interface{}{}
+
+		for i := 0; i < mt.NumField(); i++ {
+			jsonName := mt.Field(i).Tag.Get("json")
+			fieldName := mt.Field(i).Name
+			errorString := errors[fieldName]
+			if errorString != nil {
+				errorContent[jsonName] = errorString
+			}
+		}
+		errorBody, _ := json.Marshal(errorContent)
+
+		return &errorBody
+	}
+	return nil
 }
