@@ -1,4 +1,4 @@
-package main
+package endpoints
 
 import (
 	"encoding/json"
@@ -9,8 +9,7 @@ import (
 	"github.com/LastZactionHero/contact_us/models"
 )
 
-// PayloadContractor from API
-type PayloadContractor struct {
+type payloadContractor struct {
 	ID                int64
 	Name              string  `json:"name"`
 	City              string  `json:"city"`
@@ -25,10 +24,11 @@ type PayloadContractor struct {
 	AnythingElse      string  `json:"anything_else"`
 }
 
-func contractorCreateHandler(w http.ResponseWriter, r *http.Request) {
+// ContractorCreateHandler POST create Contractor
+func ContractorCreateHandler(w http.ResponseWriter, r *http.Request) {
 	applyCorsHeader(w, r)
 	body, _ := ioutil.ReadAll(r.Body)
-	var payload PayloadContractor
+	var payload payloadContractor
 	err := json.Unmarshal(body, &payload)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

@@ -1,4 +1,4 @@
-package main
+package endpoints
 
 import (
 	"encoding/json"
@@ -9,7 +9,8 @@ import (
 	"github.com/LastZactionHero/contact_us/models"
 )
 
-func skillCreateHandler(w http.ResponseWriter, r *http.Request) {
+// SkillCreateHandler POST create Skill
+func SkillCreateHandler(w http.ResponseWriter, r *http.Request) {
 	applyCorsHeader(w, r)
 	body, _ := ioutil.ReadAll(r.Body)
 	var skill models.Skill
@@ -30,7 +31,8 @@ func skillCreateHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func skillIndexHandler(w http.ResponseWriter, r *http.Request) {
+// SkillIndexHandler GET skills
+func SkillIndexHandler(w http.ResponseWriter, r *http.Request) {
 	applyCorsHeader(w, r)
 	var skills []models.Skill
 	database.DB.Find(&skills)
