@@ -15,7 +15,7 @@ import (
 
 // Contact - contact form entry
 type Contact struct {
-	ID      int64
+	ID      int64  `json:"id"`
 	Email   string `json:"email"`
 	Name    string `json:"name"`
 	Phone   string `json:"phone"`
@@ -39,6 +39,9 @@ func main() {
 	r.HandleFunc("/skills", skillCreateHandler).Methods("POST")
 	r.HandleFunc("/skills", skillIndexHandler).Methods("GET")
 
+	r.HandleFunc("/contractors", optionsHandler).Methods("OPTIONS")
+	r.HandleFunc("/contractors", contractorCreateHandler).Methods("POST")
+
 	http.Handle("/", r)
 	http.ListenAndServe(fmt.Sprintf(":%s", serverPort), nil)
 }
@@ -60,6 +63,8 @@ func dbConnect() *gorm.DB {
 func dbInit() {
 	db.AutoMigrate(&Contact{})
 	db.AutoMigrate(&Skill{})
+	db.AutoMigrate(&Contractor{})
+	// db.AutoMigrate(&ContractorSkill{})
 }
 
 func optionsHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,6 +81,8 @@ func contactCreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	db.Create(&contact)
+	w.WriteHeader(http.StatusCreated)
+
 	triggerNotification()
 }
 

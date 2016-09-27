@@ -8,7 +8,7 @@ import (
 
 // Skill possessed by a contractor
 type Skill struct {
-	ID   int64
+	ID   int64  `json:"id"`
 	Name string `json:"name"`
 }
 
@@ -29,6 +29,8 @@ func skillCreateHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		db.Create(&skill)
 	}
+
+	w.WriteHeader(http.StatusCreated)
 }
 
 func skillIndexHandler(w http.ResponseWriter, r *http.Request) {
