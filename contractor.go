@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/LastZactionHero/contact_us/database"
 	"github.com/LastZactionHero/contact_us/models"
 )
 
@@ -35,7 +36,7 @@ func contractorCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var skills []models.Skill
-	db.Where("id in (?)", payload.SkillIDs).Find(&skills)
+	database.DB.Where("id in (?)", payload.SkillIDs).Find(&skills)
 
 	contractor := models.Contractor{
 		Name:              payload.Name,
@@ -50,7 +51,7 @@ func contractorCreateHandler(w http.ResponseWriter, r *http.Request) {
 		AnythingElse:      payload.AnythingElse,
 		Skills:            skills,
 	}
-	db.Create(&contractor)
+	database.DB.Create(&contractor)
 
 	w.WriteHeader(http.StatusCreated)
 

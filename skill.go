@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/LastZactionHero/contact_us/database"
 	"github.com/LastZactionHero/contact_us/models"
 )
 
@@ -19,11 +20,11 @@ func skillCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var existingSkill models.Skill
-	db.Where("name = ?", skill.Name).First(&existingSkill)
+	database.DB.Where("name = ?", skill.Name).First(&existingSkill)
 	if existingSkill.ID > 0 {
 		// Already exists
 	} else {
-		db.Create(&skill)
+		database.DB.Create(&skill)
 	}
 
 	w.WriteHeader(http.StatusCreated)
@@ -32,7 +33,7 @@ func skillCreateHandler(w http.ResponseWriter, r *http.Request) {
 func skillIndexHandler(w http.ResponseWriter, r *http.Request) {
 	applyCorsHeader(w, r)
 	var skills []models.Skill
-	db.Find(&skills)
+	database.DB.Find(&skills)
 
 	skillsByte, err := json.Marshal(skills)
 	if err != nil {

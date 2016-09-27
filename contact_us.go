@@ -8,18 +8,16 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/LastZactionHero/contact_us/database"
 	"github.com/LastZactionHero/contact_us/models"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-var db *gorm.DB
-
 func main() {
 	// Connect to database
-	db = dbConnect()
-	dbInit()
+	database.DBConnect()
+	database.DBInit()
 
 	// Router
 	serverPort := os.Getenv("CONTACT_US_PORT")
@@ -38,26 +36,6 @@ func main() {
 	http.ListenAndServe(fmt.Sprintf(":%s", serverPort), nil)
 }
 
-func dbConnect() *gorm.DB {
-	dbUser := os.Getenv("CONTACT_US_DB_USER")
-	dbPass := os.Getenv("CONTACT_US_DB_PASS")
-	dbName := os.Getenv("CONTACT_US_DB_NAME")
-	connectStr := fmt.Sprintf("%s:%s@/%s", dbUser, dbPass, dbName)
-	dbc, err := gorm.Open("mysql", connectStr)
-
-	if err != nil {
-		fmt.Println(err)
-		panic("failed to connect to database")
-	}
-	return dbc
-}
-
-func dbInit() {
-	db.AutoMigrate(&models.Contact{})
-	db.AutoMigrate(&models.Skill{})
-	db.AutoMigrate(&models.Contractor{})
-}
-
 func optionsHandler(w http.ResponseWriter, r *http.Request) {
 	applyCorsHeader(w, r)
 }
@@ -71,7 +49,7 @@ func contactCreateHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	db.Create(&contact)
+	database.DB.Create(&contact)
 	w.WriteHeader(http.StatusCreated)
 
 	triggerNotification()
