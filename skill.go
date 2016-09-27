@@ -4,25 +4,21 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-)
 
-// Skill possessed by a contractor
-type Skill struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-}
+	"github.com/LastZactionHero/contact_us/models"
+)
 
 func skillCreateHandler(w http.ResponseWriter, r *http.Request) {
 	applyCorsHeader(w, r)
 	body, _ := ioutil.ReadAll(r.Body)
-	var skill Skill
+	var skill models.Skill
 	err := json.Unmarshal(body, &skill)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	var existingSkill Skill
+	var existingSkill models.Skill
 	db.Where("name = ?", skill.Name).First(&existingSkill)
 	if existingSkill.ID > 0 {
 		// Already exists
@@ -35,7 +31,7 @@ func skillCreateHandler(w http.ResponseWriter, r *http.Request) {
 
 func skillIndexHandler(w http.ResponseWriter, r *http.Request) {
 	applyCorsHeader(w, r)
-	var skills []Skill
+	var skills []models.Skill
 	db.Find(&skills)
 
 	skillsByte, err := json.Marshal(skills)

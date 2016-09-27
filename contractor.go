@@ -4,23 +4,9 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-)
 
-// Contractor record
-type Contractor struct {
-	ID                int64
-	Name              string
-	City              string
-	Phone             string
-	CurrentlyEmployed bool
-	Availability      string
-	Skills            []Skill `gorm:"many2many:contractor_skills;"`
-	Projects          string  `sql:"type:text"`
-	Github            string
-	Linkedin          string
-	Website           string
-	AnythingElse      string `sql:"type:text"`
-}
+	"github.com/LastZactionHero/contact_us/models"
+)
 
 // PayloadContractor from API
 type PayloadContractor struct {
@@ -48,10 +34,10 @@ func contractorCreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var skills []Skill
+	var skills []models.Skill
 	db.Where("id in (?)", payload.SkillIDs).Find(&skills)
 
-	contractor := Contractor{
+	contractor := models.Contractor{
 		Name:              payload.Name,
 		City:              payload.City,
 		Phone:             payload.Phone,

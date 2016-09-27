@@ -8,19 +8,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/LastZactionHero/contact_us/models"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
-
-// Contact - contact form entry
-type Contact struct {
-	ID      int64  `json:"id"`
-	Email   string `json:"email"`
-	Name    string `json:"name"`
-	Phone   string `json:"phone"`
-	Message string `json:"message" sql:"type:text"`
-}
 
 var db *gorm.DB
 
@@ -61,10 +53,9 @@ func dbConnect() *gorm.DB {
 }
 
 func dbInit() {
-	db.AutoMigrate(&Contact{})
-	db.AutoMigrate(&Skill{})
-	db.AutoMigrate(&Contractor{})
-	// db.AutoMigrate(&ContractorSkill{})
+	db.AutoMigrate(&models.Contact{})
+	db.AutoMigrate(&models.Skill{})
+	db.AutoMigrate(&models.Contractor{})
 }
 
 func optionsHandler(w http.ResponseWriter, r *http.Request) {
@@ -74,7 +65,7 @@ func optionsHandler(w http.ResponseWriter, r *http.Request) {
 func contactCreateHandler(w http.ResponseWriter, r *http.Request) {
 	applyCorsHeader(w, r)
 	body, _ := ioutil.ReadAll(r.Body)
-	var contact Contact
+	var contact models.Contact
 	err := json.Unmarshal(body, &contact)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
