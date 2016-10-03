@@ -60,6 +60,7 @@ func ContractorCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if errorBody := validate(contractor); errorBody != nil {
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(*errorBody)
 		return
@@ -69,5 +70,5 @@ func ContractorCreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 
-	triggerNotification()
+	// triggerNotification()
 }

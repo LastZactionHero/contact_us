@@ -34,7 +34,9 @@ func SkillCreateHandler(w http.ResponseWriter, r *http.Request) {
 		database.DB.Create(&skill)
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	skillByte, _ := json.Marshal(skill)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(skillByte)
 }
 
 // SkillIndexHandler GET skills
