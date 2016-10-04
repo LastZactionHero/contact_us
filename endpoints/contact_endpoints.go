@@ -22,5 +22,5 @@ func ContactCreateHandler(w http.ResponseWriter, r *http.Request) {
 	database.DB.Create(&contact)
 	w.WriteHeader(http.StatusCreated)
 
-	triggerNotification()
+	triggerNotification("Contact Us", contact.Email)
 }

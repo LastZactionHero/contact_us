@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"bytes"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -22,18 +23,28 @@ func applyCorsHeader(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS")
 }
 
-type smtpTemplateData struct {
-	From    string
-	To      string
-	Subject string
-	Body    string
-}
-
-func triggerNotification() {
+func triggerNotification(title string, email string) {
 	key := os.Getenv("CONTACT_US_IFTTT_KEY")
 	trigger := os.Getenv("CONTACT_US_IFTTT_TRIGGER")
 	url := "https://maker.ifttt.com/trigger/" + trigger + "/with/key/" + key
-	_, err := http.Post(url, "application/json", nil)
+
+	type iftttValue struct {
+		Title string `json:"value1"`
+		Email string `json:"value2"`
+	}
+
+	value := iftttValue{Title: title, Email: email}
+	valueJSON, err := json.Marshal(value)
+
+	var reader *bytes.Reader
+	if err != nil {
+		log.Print("Error creating IFTTT JSON")
+		log.Print(err.Error())
+	} else {
+		reader = bytes.NewReader(valueJSON)
+	}
+
+	_, err = http.Post(url, "application/json", reader)
 	if err != nil {
 		log.Printf("Error posting notification: %s", err)
 	}

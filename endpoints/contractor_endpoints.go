@@ -70,5 +70,5 @@ func ContractorCreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 
-	// triggerNotification()
+	triggerNotification("Contractor Signup", contractor.Email)
 }
