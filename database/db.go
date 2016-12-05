@@ -2,7 +2,6 @@ package database
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/LastZactionHero/contact_us/models"
 	"github.com/jinzhu/gorm"
@@ -13,11 +12,7 @@ var DB *gorm.DB
 
 // DBConnect connect to database
 func DBConnect() *gorm.DB {
-	dbUser := os.Getenv("CONTACT_US_DB_USER")
-	dbPass := os.Getenv("CONTACT_US_DB_PASS")
-	dbName := os.Getenv("CONTACT_US_DB_NAME")
-	connectStr := fmt.Sprintf("%s:%s@/%s", dbUser, dbPass, dbName)
-	dbc, err := gorm.Open("mysql", connectStr)
+	dbc, err := gorm.Open("postgres", "host=db user=postgres dbname=postgres sslmode=disable password=")
 
 	if err != nil {
 		fmt.Println(err)

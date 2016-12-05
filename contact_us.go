@@ -8,7 +8,7 @@ import (
 	"github.com/LastZactionHero/contact_us/database"
 	"github.com/LastZactionHero/contact_us/endpoints"
 	"github.com/gorilla/mux"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func main() {
