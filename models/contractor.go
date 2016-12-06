@@ -17,4 +17,5 @@ type Contractor struct {
 	Linkedin          string  `json:"linkedin" validate:"max=255"`
 	Website           string  `json:"website" validate:"max=255"`
 	AnythingElse      string  `sql:"type:text"`
+	Newsletter        bool    `json:"newsletter"`
 }

@@ -1,38 +1,45 @@
 package newsletter
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"net/http"
 	"os"
 )
 
-type payloaMCSignup struct {
+type payloadMCSignup struct {
 	Email       string `json:"email_address"`
 	Status      string `json:"status"`
 	StatusIfNew string `json:"status_if_new"`
 }
 
-func signup(email) {
+// Signup for Mailchimp newsletter
+func Signup(email string) {
 	mcAPIHost := os.Getenv("MAILCHIMP_DC_HOST")
 	mcAPIKey := os.Getenv("MAILCHIMP_API_KEY")
 	mcListID := os.Getenv("MAILCHIMP_CONTRACTOR_SIGNUP_LIST_ID")
 
-	requestPath := fmt.Spritnf("%s/lists/%s/members", mcAPIHost, mcListID)
-	json.Marshal(payloaMCSignup)
+	payload := payloadMCSignup{
+		Email:       email,
+		Status:      "subscribed",
+		StatusIfNew: "subscribed",
+	}
+	jsonBytes, _ := json.Marshal(payload)
+
+	requestPath := fmt.Sprintf("%s/lists/%s/members", mcAPIHost, mcListID)
+
+	request, err := http.NewRequest("POST", requestPath, bytes.NewBuffer(jsonBytes))
+	request.SetBasicAuth("username", mcAPIKey)
+
+	fmt.Println("Sending")
+	client := &http.Client{}
+	response, err := client.Do(request)
+	fmt.Println("Sent")
+	if err != nil {
+		fmt.Print(err)
+	}
+	if response.StatusCode != http.StatusOK {
+		fmt.Print(response)
+	}
 }
-
-// MAILCHIMP_API_KEY
-// MAILCHIMP_CONTRACTOR_SIGNUP_LIST_ID
-// MAILCHIMP_DC_HOST
-
-// newsletter id? 76705
-//
-// POST lists/83513a6597/members
-// https://us14.api.mailchimp.com/3.0/lists/{list_id}.
-//
-//
-//
-// {
-// 	"email_address": "zach+mc1@squarewaveng.com",
-// 	"status": "subscribed",
-// 	"status_if_new": "subscribed"
-// }

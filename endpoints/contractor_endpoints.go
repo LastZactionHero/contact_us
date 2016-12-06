@@ -7,6 +7,7 @@ import (
 
 	"github.com/LastZactionHero/contact_us/database"
 	"github.com/LastZactionHero/contact_us/models"
+	"github.com/LastZactionHero/contact_us/newsletter"
 )
 
 type payloadContractor struct {
@@ -25,6 +26,7 @@ type payloadContractor struct {
 	Linkedin          string  `json:"linkedin"`
 	Website           string  `json:"website"`
 	AnythingElse      string  `json:"anything_else"`
+	Newsletter        bool    `json:"newsletter"`
 }
 
 // ContractorCreateHandler POST create Contractor
@@ -57,6 +59,7 @@ func ContractorCreateHandler(w http.ResponseWriter, r *http.Request) {
 		Website:           payload.Website,
 		AnythingElse:      payload.AnythingElse,
 		Skills:            skills,
+		Newsletter:        payload.Newsletter,
 	}
 
 	if errorBody := validate(contractor); errorBody != nil {
@@ -71,4 +74,9 @@ func ContractorCreateHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	triggerNotification("Contractor Signup", contractor.Email)
+
+	if contractor.Newsletter {
+		go newsletter.Signup(contractor.Email)
+	}
+
 }

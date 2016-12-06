@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	fmt.Println("Starting up")
+
 	// Connect to database
 	database.DBConnect()
 	database.DBInit()

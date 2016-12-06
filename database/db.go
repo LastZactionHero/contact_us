@@ -12,7 +12,9 @@ var DB *gorm.DB
 
 // DBConnect connect to database
 func DBConnect() *gorm.DB {
+	fmt.Println("Connecting to db")
 	dbc, err := gorm.Open("postgres", "host=db user=postgres dbname=postgres sslmode=disable password=")
+	fmt.Println("Connected!")
 
 	if err != nil {
 		fmt.Println(err)
